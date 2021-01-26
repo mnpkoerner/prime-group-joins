@@ -23,7 +23,10 @@ JOIN "products" ON "warehouse_product".product_id = "products".id
 WHERE "products".description LIKE 'diet pepsi';
 
 5. Get the number of orders for each customer. NOTE: It is OK if those without orders are not included in results.
-
+SELECT "customers".first_name, COUNT("orders".id) FROM "customers"
+JOIN "addresses" ON "addresses".customer_id = "customers".id
+JOIN "orders" ON "orders".address_id = "addresses".id
+GROUP BY "customers".first_name;
 
 -- 6. How many customers do we have?
 SELECT COUNT(*) AS "total_customers" FROM "customers";
@@ -32,6 +35,7 @@ SELECT COUNT(*) AS "total_customers" FROM "customers";
 SELECT COUNT(*) AS "total_products" FROM "products";
 
 8. What is the total available on-hand quantity of diet pepsi?
+
 
 ## Stretch
 9. How much was the total cost for each order?
