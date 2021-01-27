@@ -43,11 +43,26 @@ GROUP BY "products".description;
 
 -- ## Stretch
 -- 9. How much was the total cost for each order?
-SELECT "orders".id, SUM("products".unit_price) FROM "orders"
+SELECT "orders".id, SUM("products".unit_price * "line_items".quantity) AS "total_price" FROM "orders"
 JOIN "line_items" ON "line_items".order_id = "orders".id
 JOIN "products" ON "products".id = "line_items".product_id
-GROUP BY "orders".id;
+GROUP BY "orders".id
+ORDER BY "orders".id ASC;
 
 
-10. How much has each customer spent in total?
-11. How much has each customer spent in total? Customers who have spent $0 should still show up in the table. It should say 0, not NULL (research coalesce).
+-- 10. How much has each customer spent in total?
+SELECT "customers".first_name, SUM("products".unit_price * "line_items".quantity) FROM "customers"
+JOIN "addresses" ON "addresses".customer_id = "customers".id
+JOIN "orders" ON "orders".address_id = "addresses".id
+JOIN "line_items" ON "line_items".order_id = "orders".id
+JOIN "products" ON "products".id = "line_items".product_id
+GROUP BY "customers".first_name;
+
+-- 11. How much has each customer spent in total? Customers who have spent $0 should still show up in the table. It should say 0, not NULL (research coalesce).
+
+SELECT "customers".first_name, COALESCE(SUM("products".unit_price * "line_items".quantity), '0') FROM "customers"
+JOIN "addresses" ON "addresses".customer_id = "customers".id
+JOIN "orders" ON "orders".address_id = "addresses".id
+JOIN "line_items" ON "line_items".order_id = "orders".id
+JOIN "products" ON "products".id = "line_items".product_id
+GROUP BY "customers".first_name;
